@@ -1,0 +1,111 @@
+\documentclass[
+  %a4paper,% default
+  %pagesize,% default since version 3.17
+  twoside,
+  fontsize=11pt,
+]{scrartcl}
+\usepackage[left=2.5cm, right=2.5cm, top=3cm, bottom=3cm, marginparwidth=3cm, marginparsep=0.5cm]{geometry}
+
+% automark for \leftmark and \rightmark of chapters
+\usepackage[automark,headsepline]{scrlayer-scrpage}
+
+\usepackage{multicol}
+% for rotatebox
+\usepackage{graphics}
+\setlength{\columnsep}{25pt}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+% for nonsense text
+\usepackage{blindtext}
+
+
+% defines header
+% chapter number
+\ohead{\leftmark}
+% manually set title
+\ihead{How to add margin headers}
+
+% set our text content once
+\newcommand{\yourfooter}{
+    falkschoenfeld.com\\
+    A tinkerer's blog
+}
+
+% defines footer on even pages 
+\lefoot{
+    \pagemark
+    \hspace{1em}
+    \begin{tabular}{|l}
+        \yourfooter
+    \end{tabular}
+}
+
+% defines footer on odd pages
+\rofoot{
+    \begin{tabular}{r|}
+        \yourfooter
+    \end{tabular}
+    \hspace{1em}
+    \pagemark
+}
+
+\addtokomafont{pageheadfoot}{\upshape}
+
+% heft side headers:
+% create a header on the given side in the margin, pushed to the top, in Large script
+% param 1 (optional): line length, default 10 cm
+% param 2: text
+% this might need some fixes for the marginsize, eg. just \baselineskip
+
+\newcommand{\rightsideheader}[2][10cm]{%
+    \marginpar{%
+        \rotatebox{270}{%
+        \begin{tabular}{l}%
+            \hspace*{#1}\\
+            \Large\textbf{#2}\\
+            \hline
+        \end{tabular}
+        }
+    }
+}
+
+
+% different order, table alignment and rotation
+\newcommand{\leftsideheader}[2][10cm]{
+    \marginpar{%
+        \hfill%
+        \rotatebox{90}{%
+        \begin{tabular}{r}
+            \Large\textbf{#2}\\
+            \hline
+            \hspace*{#1}
+        \end{tabular}
+    }}
+}
+% easy unified command, skips checking for twoside as it is assumed
+\newcommand{\sideheader}[2][10cm]{
+    \Ifthispageodd{
+        \rightsideheader[#1]{#2}
+    }{
+        \leftsideheader[#1]{#2}
+    }
+}
+
+\begin{document}
+\sideheader{first page}
+\section{On designing page layouts}
+
+Place single column text outside multicols environment
+\begin{multicols}{2}
+\Blindtext
+\end{multicols}
+\clearpage
+
+\sideheader{second page}
+\section{Even more text?!}
+
+\Blindtext
+\end{document}
+
